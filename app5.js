@@ -63,4 +63,40 @@ app.get("/janken", (req, res) => {
   res.render( 'janken', display );
 });
 
+
+app.get("/janken2", (req, res) => {
+  const hand = req.query.hand;
+  let win = Number(req.query.win);
+  let total = Number(req.query.total);
+
+  const hands = ["グー", "チョキ", "パー"];
+  const cpu = hands[Math.floor(Math.random() * 3)];
+
+  let judgement = "";
+
+  if (hand === cpu) {
+    judgement = "あいこ";
+  } else if (
+    (hand === "グー" && cpu === "チョキ") ||
+    (hand === "チョキ" && cpu === "パー") ||
+    (hand === "パー" && cpu === "グー")
+  ) {
+    judgement = "勝ち";
+    win += 1;
+  } else {
+    judgement = "負け";
+  }
+
+  total += 1;
+
+  res.render("janken2", {
+    your: hand,
+    cpu: cpu,
+    judgement: judgement,
+    win: win,
+    total: total
+  });
+});
+
+
 app.listen(8080, () => console.log("Example app listening on port 8080!"));
