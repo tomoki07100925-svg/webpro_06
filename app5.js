@@ -12,6 +12,25 @@ let station = [
   { id:5, code:"JE14", name:"海浜幕張駅" },
   { id:6, code:"JE05", name:"新浦安駅" },
 ];
+let shinkansen = [
+  { id: 1, name: "岡山", note: "" },
+  { id: 2, name: "姫路", note: "一部列車" },
+  { id: 3, name: "西明石", note: "一部列車" },
+  { id: 4, name: "新神戸", note: "" },
+  { id: 5, name: "新大阪", note: "" },
+  { id: 6, name: "京都", note: "" },
+  { id: 7, name: "名古屋", note: "" },
+  { id: 8, name: "新横浜", note: "" },
+  { id: 9, name: "品川", note: "" },
+  { id: 10, name: "東京", note: "" }
+];
+app.get("/shinkansen", (req, res) => {
+res.render("shinkansen", {
+  data: shinkansen,
+  trainName: "ひかり"
+});
+});
+
 app.get("/keiyo", (req, res) => {
   // 本来ならここにDBとのやり取りが入る
 res.render('db2', { data: station });

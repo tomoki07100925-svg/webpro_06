@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>新幹線の停車駅一覧</title>
+</head>
+<body>
+  <h2>新幹線「<%= trainName %>」の停車駅一覧</h2>
+
+  <table border="1">
+    <tr>
+      <th>ID</th>
+      <th>駅名</th>
+      <th>備考</th>
+    </tr>
+
+    <% for (let row of data) { %>
+      <tr>
+        <td><%= row.id %></td>
+        <td><%= row.name %></td>
+        <td><%= row.note %></td>
+      </tr>
+    <% } %>
+  </table>
+</body>
+</html>
