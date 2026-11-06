@@ -31,6 +31,30 @@ res.render("shinkansen", {
 });
 });
 
+let trainTypes = [
+  { id: 1, name: "のぞみ", feature: "主要駅に停車" },
+  { id: 2, name: "ひかり", feature: "列車によって停車駅が異なる" },
+  { id: 3, name: "こだま", feature: "各駅に停車" }
+];
+app.get("/train_types", (req, res) => {
+  res.render("train_types", { data: trainTypes });
+});
+app.get("/train_types_add", (req, res) => {
+  let id = req.query.id;
+  let name = req.query.name;
+  let feature = req.query.feature;
+
+  let newTrain = {
+    id: id,
+    name: name,
+    feature: feature
+  };
+
+  trainTypes.push(newTrain);
+
+  res.redirect("/train_types");
+});
+
 app.get("/keiyo", (req, res) => {
   // 本来ならここにDBとのやり取りが入る
 res.render('db2', { data: station });

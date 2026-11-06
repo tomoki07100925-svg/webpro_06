@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>新幹線の列車種別一覧</title>
+</head>
+<body>
+  <h2>新幹線の列車種別一覧</h2>
+
+  <table border="1">
+    <tr>
+      <th>ID</th>
+      <th>列車名</th>
+      <th>特徴</th>
+    </tr>
+
+    <% for (let row of data) { %>
+      <tr>
+        <td><%= row.id %></td>
+        <td><%= row.name %></td>
+        <td><%= row.feature %></td>
+      </tr>
+    <% } %>
+  </table>
+</body>
+</html>
