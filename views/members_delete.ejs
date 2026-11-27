@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><title>削除の確認</title></head>
+<body><h1>削除の確認</h1>
+<p><%= member.name %>を削除しますか？</p>
+<form method="post" action="/<%= key %>/<%= member.id %>/delete"><button type="submit">削除</button></form>
+<p><a href="/<%= key %>/<%= member.id %>">キャンセル</a></p></body></html>

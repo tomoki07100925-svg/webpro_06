@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><title>メンバー管理</title></head>
+<body><h1>メンバー管理</h1><ul>
+<% for (const [key, system] of Object.entries(systems)) { %>
+  <li><a href="/<%= key %>"><%= system.title %>メンバー一覧</a></li>
+<% } %>
+</ul></body></html>

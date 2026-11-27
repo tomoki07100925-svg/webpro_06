@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><title><%= system.title %>メンバー<%= editing ? '変更' : '登録' %></title></head>
+<body><h1><%= system.title %>メンバー<%= editing ? '変更' : '登録' %></h1>
+<% if (error) { %><p role="alert"><%= error %></p><% } %>
+<form method="post" action="/<%= key %><%= editing ? '/' + member.id : '' %>">
+<p><label>名前 <input name="name" value="<%= member.name || '' %>" required></label></p>
+<p><label><%= system.groupLabel %> <input name="<%= system.group %>" value="<%= member[system.group] || '' %>" required></label></p>
+<p><label>活動開始日・デビュー日 <input type="date" name="debut_date" value="<%= member.debut_date || '' %>"></label></p>
+<p><label>YouTubeチャンネルURL <input type="url" name="channel_url" value="<%= member.channel_url || '' %>"></label></p>
+<p><label><%= system.extraLabel %> <input name="<%= system.extra %>" value="<%= member[system.extra] || '' %>" <%= key === 'milipro' ? '' : 'required' %>></label></p>
+<button type="submit"><%= editing ? '更新' : '登録' %></button></form>
+<p><a href="/<%= key %><%= editing ? '/' + member.id : '' %>">戻る</a></p></body></html>

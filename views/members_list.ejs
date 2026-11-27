@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><title><%= system.title %>メンバー一覧</title></head>
+<body><h1><%= system.title %>メンバー一覧</h1>
+<form method="get"><label>名前で検索 <input name="q" value="<%= query %>"></label><button>検索</button></form>
+<p><a href="/<%= key %>/new">メンバーを追加</a></p>
+<table><thead><tr><th>ID</th><th>名前</th></tr></thead><tbody>
+<% for (const member of members) { %>
+  <tr><td><%= member.id %></td><td><a href="/<%= key %>/<%= member.id %>"><%= member.name %></a></td></tr>
+<% } %>
+</tbody></table><p><a href="/">トップページ</a></p></body></html>

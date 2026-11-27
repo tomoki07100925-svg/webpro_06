@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><title><%= member.name %>の詳細</title></head>
+<body><h1><%= member.name %>の詳細</h1><dl>
+<dt>ID</dt><dd><%= member.id %></dd><dt>名前</dt><dd><%= member.name %></dd>
+<dt><%= system.groupLabel %></dt><dd><%= member[system.group] %></dd>
+<dt>活動開始日・デビュー日</dt><dd><%= member.debut_date || '未確認' %></dd>
+<dt>YouTubeチャンネル</dt><dd><% if (member.channel_url) { %><a href="<%= member.channel_url %>"><%= member.channel_url %></a><% } else { %>未確認<% } %></dd>
+<dt><%= system.extraLabel %></dt><dd><%= member[system.extra] || '未確認' %></dd>
+</dl><p><a href="/<%= key %>/<%= member.id %>/edit">変更</a>　<a href="/<%= key %>/<%= member.id %>/delete">削除</a>　<a href="/<%= key %>">一覧へ戻る</a></p></body></html>
