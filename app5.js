@@ -77,6 +77,22 @@ app.post('/keiyo2/update/:number', (req, res) => {
   res.redirect('/keiyo2/' + number);
 });
 
+app.get('/keiyo2/delete/:number', (req, res) => {
+  const number = stationNumber(req.params.number);
+  if (number === -1) return res.status(404).send('駅が見つかりません。');
+  res.render('keiyo2_delete', { number, data: station2[number] });
+});
+
+app.post('/keiyo2/delete/:number', (req, res) => {
+  const number = stationNumber(req.params.number);
+  if (number === -1) return res.status(404).send('駅が見つかりません。');
+  if (String(station2[number].id) !== req.body.id) {
+    return res.status(409).send('駅の情報が変更されました。一覧から再度選択してください。');
+  }
+  station2.splice(number, 1);
+  res.redirect('/keiyo2');
+});
+
 app.get("/keiyo2", (req, res) => {
   // 本来ならここにDBとのやり取りが入る
   res.render('keiyo2', {data: station2});
