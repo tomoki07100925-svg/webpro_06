@@ -3,6 +3,7 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use("/public", express.static(__dirname + "/public"));
+app.use(express.urlencoded({ extended: false }));
 
 let station = [
   { id:1, code:"JE01", name:"東京駅" },
@@ -23,6 +24,59 @@ let station2 = [
   { id:7, code:"JE18", name:"蘇我駅", change:"内房線，外房線", passengers:31328, distance:43.0 }
 ];
 
+// 以前の一覧にしかなかった駅も残し、両方の画面で同じデータを使う。
+for (const oldStation of station) {
+  if (!station2.some((item) => item.name === oldStation.name)) {
+    station2.push({ ...oldStation, id: Math.max(...station2.map((item) => item.id)) + 1,
+      change: "", passengers: null, distance: null });
+  }
+}
+station = station2;
+
+function stationNumber(value) {
+  if (typeof value !== 'string' || !/^(0|[1-9]\d*)$/.test(value)) return -1;
+  const number = Number(value);
+  return Number.isSafeInteger(number) && number < station2.length ? number : -1;
+}
+
+function stationInput(input, existingIndex = -1) {
+  const idText = typeof input.id === 'string' ? input.id.trim() : '';
+  const code = typeof input.code === 'string' ? input.code.trim() : '';
+  const name = typeof input.name === 'string' ? input.name.trim() : '';
+  if (!/^[1-9]\d*$/.test(idText) || !Number.isSafeInteger(Number(idText)) || !code || !name) {
+    return { error: 'IDには正の整数を入力し、駅コードと駅名を入力してください。' };
+  }
+  const id = Number(idText);
+  if (station2.some((item, index) => index !== existingIndex && item.id === id)) {
+    return { error: 'このIDはすでに登録されています。' };
+  }
+  const change = typeof input.change === 'string' ? input.change.trim() : '';
+  const passengersText = typeof input.passengers === 'string' ? input.passengers.trim() : '';
+  const distanceText = typeof input.distance === 'string' ? input.distance.trim() : '';
+  const passengers = passengersText === '' ? null : Number(passengersText);
+  const distance = distanceText === '' ? null : Number(distanceText);
+  if ((passengers !== null && (!Number.isSafeInteger(passengers) || passengers < 0)) ||
+      (distance !== null && (!Number.isFinite(distance) || distance < 0))) {
+    return { error: '乗客数は0以上の整数、距離は0以上の数値を入力してください。' };
+  }
+  return { data: { id, code, name, change, passengers, distance } };
+}
+
+app.get('/keiyo2/edit/:number', (req, res) => {
+  const number = stationNumber(req.params.number);
+  if (number === -1) return res.status(404).send('駅が見つかりません。');
+  res.render('keiyo2_edit', { number, data: station2[number] });
+});
+
+app.post('/keiyo2/update/:number', (req, res) => {
+  const number = stationNumber(req.params.number);
+  if (number === -1) return res.status(404).send('駅が見つかりません。');
+  const result = stationInput(req.body, number);
+  if (result.error) return res.status(400).send(result.error);
+  station2[number] = result.data;
+  res.redirect('/keiyo2/' + number);
+});
+
 app.get("/keiyo2", (req, res) => {
   // 本来ならここにDBとのやり取りが入る
   res.render('keiyo2', {data: station2});
@@ -30,9 +84,10 @@ app.get("/keiyo2", (req, res) => {
 
 app.get("/keiyo2/:number", (req, res) => {
   // 本来ならここにDBとのやり取りが入る
-  const number = req.params.number;
+  const number = stationNumber(req.params.number);
+  if (number === -1) return res.status(404).send('駅が見つかりません。');
   const detail = station2[number];
-  res.render('keiyo2_detail', {data: detail});
+  res.render('keiyo2_detail', {data: detail, number});
 });
 
 
@@ -84,16 +139,14 @@ app.get("/keiyo", (req, res) => {
 res.render('db2', { data: station });
 });
 
-app.get("/keiyo_add", (req, res) => {
-  let id = req.query.id;
-  let code = req.query.code;
-  let name = req.query.name;
-
-  let newdata = { id: id, code: code, name: name };
-  station.push(newdata);
-
- res.redirect('/public/keiyo_add.html');
-});
+function addStation(req, res) {
+  const result = stationInput(req.method === 'POST' ? req.body : req.query);
+  if (result.error) return res.status(400).send(result.error);
+  station2.push(result.data);
+  res.redirect('/keiyo2');
+}
+app.get('/keiyo_add', addStation);
+app.post('/keiyo_add', addStation);
 
 app.get("/hello1", (req, res) => {
   const message1 = "Hello world";
